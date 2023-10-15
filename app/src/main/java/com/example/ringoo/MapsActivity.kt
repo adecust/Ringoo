@@ -1,8 +1,13 @@
 package com.example.ringoo
 
+import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -30,29 +35,33 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        val customMarkerBitmap = BitmapFactory.decodeResource(resources, R.drawable.bus_icon)
+
 
         val user = LatLng(37.17306963612173, 38.99769571159779)
-        val buss = LatLng(37.16595648556052, 38.996100618280884)
+        val busLocation = LatLng(37.16595648556052, 38.996100618280884)
+        mMap.addMarker(
+            MarkerOptions()
+                .position(user)
+                .title("YOU")
+        )
 
-        val customMarkerIcon: BitmapDescriptor
 
-        if (customMarkerBitmap != null) {
-            customMarkerIcon = BitmapDescriptorFactory.fromBitmap(customMarkerBitmap)
-        } else {
-            customMarkerIcon = BitmapDescriptorFactory.defaultMarker()
-        }
-
-        val bussMarkerOptions = MarkerOptions()
-        bussMarkerOptions.position(buss)
-        bussMarkerOptions.title("63 BC 253")
-        bussMarkerOptions.icon(customMarkerIcon)
-
-        mMap.addMarker(MarkerOptions().position(user).title("YOU"))
-        mMap.addMarker(bussMarkerOptions)
-
-        val zoomLevel = 14.75f
+        mMap.addMarker(
+            MarkerOptions()
+                .position(busLocation)
+                .icon(bitmapDescriptorFromVector(this, R.drawable.bus_icon))
+                .title("63 BC 253")
+        )
+        val zoomLevel = 15.25f
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(user, zoomLevel))
+    }
+    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
+        return ContextCompat.getDrawable(context, vectorResId)?.run {
+            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+            val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+            draw(Canvas(bitmap))
+            BitmapDescriptorFactory.fromBitmap(bitmap)
+        }
     }
 
 }
