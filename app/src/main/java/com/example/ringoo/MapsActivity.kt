@@ -118,7 +118,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
             override fun onFailure(call: Call<List<LocationModelItem>>, t: Throwable) {
-                Log.e("aaaa", "Api Error")
+                Log.e("aaaa", t.toString())
             }
         })
     }
